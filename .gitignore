@@ -1,0 +1,29 @@
+# Arquivos do Claude Code
+.claude.md
+CLAUDE.md
+
+# Arquivos de desenvolvimento
+PR.md
+
+# Arquivos temporários do Julia
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de IDE
+.vscode/
+.idea/
+
+# Arquivos de backup
+*~
+*.bak
+*.swp
+*.swo
+
+# Logs
+*.log
