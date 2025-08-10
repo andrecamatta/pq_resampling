@@ -1,4 +1,4 @@
-# Correção de Viés no Máximo Drawdown - Ibovespa
+# Drawdown e VaR com Reamostragem - Análise Ibovespa
 
 Script Julia que analisa o Máximo Drawdown do Ibovespa usando **Jackknife** para correção de viés e **Moving Block Bootstrap** para intervalos de confiança robustos.
 
