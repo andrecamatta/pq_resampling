@@ -1,142 +1,55 @@
-# PQ Resampling - Análise de Máximo Drawdown com Técnicas de Reamostragem
+# Correção de Viés no Máximo Drawdown - Ibovespa
 
-Este projeto demonstra a aplicação de técnicas de reamostragem (Jackknife e Bootstrap) para correção de viés em análises de risco financeiro, focando especificamente na análise do Máximo Drawdown do Índice Bovespa.
+Script Julia que analisa o Máximo Drawdown do Ibovespa usando **Jackknife** para correção de viés e **Moving Block Bootstrap** para intervalos de confiança robustos.
 
-## 🎯 Objetivo
+## O que faz
 
-Demonstrar como o **drawdown empírico sempre subestima o risco real** e como técnicas estatísticas avançadas podem fornecer estimativas mais precisas e confiáveis para gestão de risco.
+O programa baixa dados mensais do Ibovespa (desde 2000) e executa duas análises principais:
 
-## 📊 Funcionalidades
+1. **Análise de Drawdown (12 meses)** - Usando Jackknife
+   - Calcula drawdown empírico em janelas de 12 meses
+   - Corrige o viés de subestimação usando técnica Jackknife
+   - Mostra quanto o drawdown empírico subestima o risco real
 
-### Análise Principal
-- **Máximo Drawdown do Ibovespa**: Análise completa usando dados mensais históricos
-- **Correção de Viés com Jackknife**: Identifica e corrige a subestimação sistemática do drawdown empírico
-- **Intervalos de Confiança com Bootstrap**: Fornece intervalos robustos preservando dependência temporal
-- **VaR 99% com Moving Block Bootstrap**: Análise de Value-at-Risk considerando autocorrelação
+2. **Análise de VaR 99% (24 meses)** - Usando Moving Block Bootstrap  
+   - Calcula Value-at-Risk em janelas de 24 meses
+   - Preserva dependência temporal dos retornos
+   - Fornece intervalos de confiança robustos
 
-### Validação Estatística
-- **Teste de Ljung-Box**: Verificação de independência dos retornos
-- **Análise de Janelas Deslizantes**: Estudo do viés em diferentes períodos
-- **Comparação de Métricas**: Drawdown vs VaR para gestão de risco completa
+## Como Usar
 
-## 🚀 Como Usar
+1. **Instalar Julia** (versão 1.6+)
+2. **Instalar dependências**:
+   ```julia
+   using Pkg
+   Pkg.add(["DataFrames", "Statistics", "Random", "Plots", "Dates", "YFinance", "HypothesisTests", "Distributions"])
+   ```
+3. **Executar**:
+   ```julia
+   julia pq_resampling.jl
+   ```
 
-### Pré-requisitos
-- Julia 1.6 ou superior
-- Conexão com internet (para download de dados do Yahoo Finance)
+O programa vai baixar automaticamente os dados do Ibovespa e executar as análises.
 
-### Dependências
-```julia
-using DataFrames, Statistics, Random, Plots, Dates, YFinance, HypothesisTests, Distributions
-```
+## Resultados Típicos
 
-### Instalação das Dependências
-```julia
-using Pkg
-Pkg.add(["DataFrames", "Statistics", "Random", "Plots", "Dates", "YFinance"])
-```
+**Drawdown (12 meses):**
+- Empírico médio: ~16%
+- Corrigido (Jackknife): ~27% 
+- **Subestimação: ~40%**
 
-### Executar a Análise
-```julia
-julia pq_resampling.jl
-```
+**VaR 99% (24 meses):**
+- Empírico: ~-38%
+- Bootstrap: ~-43%
+- IC 95%: [-67%, -16%]
 
-## 📈 Principais Resultados
+## Por que isso importa
 
-### Correção de Viés
-- **Problema**: Drawdown empírico subestima perdas futuras em 10-30%
-- **Solução**: Jackknife fornece estimativa corrigida mais realista
-- **Aplicação**: Essencial para períodos < 5 anos de dados
+O drawdown empírico **sempre subestima** o risco real, especialmente em períodos curtos. O Jackknife corrige essa subestimação sistemática, fornecendo uma visão mais realista do risco.
 
-### Gestão de Risco
-- **Drawdown Corrigido**: Para planejamento de longo prazo
-- **VaR 99% Bootstrap**: Para gestão de risco mensal
-- **Intervalos de Confiança**: Para cenários de stress testing
+## Validação
 
-## 🔬 Metodologia
-
-### 1. Jackknife para Drawdown
-- Corrige viés sistemático de subestimação
-- Fornece erro padrão da estimativa
-- Especialmente útil para amostras pequenas
-
-### 2. Moving Block Bootstrap
-- Preserva estrutura de dependência temporal
-- Gera intervalos de confiança robustos
-- Apropriado para séries temporais financeiras
-
-### 3. Validação de Pressupostos
-- Teste de independência dos retornos
-- Verificação de adequação dos métodos
-- Diagnóstico de autocorrelação
-
-## 📋 Estrutura dos Resultados
-
-### Análise de Drawdown (12 meses)
-```
-📉 Drawdown empírico médio: X.XX%
-📈 Drawdown corrigido médio: Y.YY%
-⚠️  Subestimação média: Z.Z%
-```
-
-### Análise de VaR (24 meses)
-```
-📊 VaR 99% empírico: X.XX%
-📊 VaR 99% bootstrap: Y.YY%
-📊 IC 95%: [A.AA%, B.BB%]
-```
-
-## 🎯 Aplicações Práticas
-
-### Para Gestores de Risco
-- Use drawdown corrigido em relatórios para investidores
-- Considere IC superior para gestão de capital
-- Combine métricas para visão completa de risco
-
-### Para Reguladores
-- Jackknife melhora precisão em relatórios regulatórios
-- Bootstrap fornece cenários de stress testing
-- Métodos estatisticamente fundamentados
-
-### Para Pesquisadores
-- Demonstração prática de correção de viés
-- Comparação de técnicas de reamostragem
-- Aplicação em dados financeiros reais
-
-## ⚠️ Considerações Importantes
-
-### Quando Usar Jackknife
-- **SEMPRE** em amostras < 5 anos
-- Quando precisão na estimativa de risco é crítica
-- Para validação de modelos de risco
-- Em relatórios regulatórios
-
-### Limitações
-- Requer dados suficientes (mínimo 120 observações mensais)
-- Pressupõe estrutura de dependência estável
-- Resultados dependem da qualidade dos dados históricos
-
-## 💡 Lição Principal
-
-**O drawdown que você viu no passado provavelmente SUBESTIMA o drawdown que você verá no futuro!**
-
-Use técnicas de reamostragem para ter uma visão mais realista e estatisticamente fundamentada do risco.
-
-## 📚 Base Teórica
-
-Este projeto baseia-se nos trabalhos fundamentais sobre:
-- Técnicas de reamostragem de Efron (Bootstrap) e Quenouille (Jackknife)
-- Análise de séries temporais financeiras
-- Métrica de risco e drawdown analysis
-- Moving block bootstrap para séries dependentes
-
-## 🤝 Contribuições
-
-Contribuições são bem-vindas! Especialmente:
-- Extensões para outros índices e mercados
-- Implementação de outras métricas de risco
-- Melhorias na visualização dos resultados
-- Testes adicionais de robustez
+O programa testa a independência dos retornos usando o teste de Ljung-Box antes de aplicar as técnicas de reamostragem.
 
 ## 📄 Licença
 
